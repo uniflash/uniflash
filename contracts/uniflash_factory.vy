@@ -7,23 +7,23 @@ contract ERC20Flash():
 # @notice The subsidy rate for loan x is: subsidy_factor / 10000
 MAX_SUBSIDY_FACTOR: constant(uint256) = 10
 
-eth_flash_template: public(address)
+ethFlashTemplate: public(address)
 erc20_flash_tempalte: public(address)
 eth_flash_addresses: address[MAX_SUBSIDY_FACTOR]
 erc20_to_flashes: map(address, address[MAX_SUBSIDY_FACTOR])
 
 @public
 def init_factory(eth_template: address, erc20_tempalte: address):
-    assert self.eth_flash_template == ZERO_ADDRESS and eth_template != ZERO_ADDRESS and \
+    assert self.ethFlashTemplate == ZERO_ADDRESS and eth_template != ZERO_ADDRESS and \
              self.erc20_flash_tempalte == ZERO_ADDRESS and erc20_tempalte != ZERO_ADDRESS
-    self.eth_flash_template = eth_template
+    self.ethFlashTemplate = eth_template
     self.erc20_flash_tempalte = erc20_tempalte
 
 @public
 def create_eth_flash():
-    assert self.eth_flash_template != ZERO_ADDRESS and self.eth_flash_addresses[0] == ZERO_ADDRESS
+    assert self.ethFlashTemplate != ZERO_ADDRESS and self.eth_flash_addresses[0] == ZERO_ADDRESS
     for i in range(MAX_SUBSIDY_FACTOR):
-        eth_flash_address: address = create_forwarder_to(self.eth_flash_template)
+        eth_flash_address: address = create_forwarder_to(self.ethFlashTemplate)
         self.eth_flash_addresses[i] = eth_flash_address
         subsidy_factor: uint256 = convert(i + 1, uint256)
         EthFlash(eth_flash_address).setup(subsidy_factor)       # subsidy rate: (i + 1) / 10000

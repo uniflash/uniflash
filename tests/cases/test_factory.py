@@ -7,7 +7,7 @@ from tests.contants import *
 
 def test_init(w3, eth_flash_template, erc20_flash_template, factory, pad_bytes32, eth_flash_abi, assert_fail):
     assert_fail(lambda: factory.init_factory(eth_flash_template.address, erc20_flash_template.address))
-    assert factory.eth_flash_template() == eth_flash_template.address
+    assert factory.ethFlashTemplate() == eth_flash_template.address
     assert factory.get_eth_flash(SUBSIDY_FACTOR) == None
 
 def test_factory(w3, eth_flash_template, factory, pad_bytes32, eth_flash_abi, assert_fail):
