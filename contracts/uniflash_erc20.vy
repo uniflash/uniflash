@@ -10,7 +10,7 @@ contract ERC20Lender():
     def erc20DeFi(token_amount: uint256(erc), interest: uint256(erc)): modifying
 
 contract Factory():
-    def create_erc20_flash(token_address: address): constant
+    def createErc20Flash(token_address: address): constant
 
 AddLiquidity: event({provider: indexed(address), token_amount: indexed(uint256(erc))})
 RemoveLiquidity: event({provider: indexed(address), token_amount: indexed(uint256(erc))})

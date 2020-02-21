@@ -7,7 +7,7 @@ contract ETHLender():
     def ethDeFi(loan: uint256(wei), interest: uint256(wei)): modifying
 
 contract Factory():
-    def create_eth_flash(): constant
+    def createEthFlash(): constant
 
 AddLiquidity: event({provider: indexed(address), eth_amount: indexed(uint256(wei))})
 RemoveLiquidity: event({provider: indexed(address), eth_amount: indexed(uint256(wei))})

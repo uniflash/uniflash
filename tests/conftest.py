@@ -69,7 +69,7 @@ def factory(w3, eth_flash_template, erc20_flash_template):
         address=tx_receipt.contractAddress,
         abi=deploy.abi
     ))
-    contract.init_factory(eth_flash_template.address, erc20_flash_template.address, transact={})
+    contract.initFactory(eth_flash_template.address, erc20_flash_template.address, transact={})
     return contract
 
 @pytest.fixture
@@ -86,8 +86,8 @@ def erc20_flash_abi():
 
 @pytest.fixture
 def eth_flash(w3, factory, eth_flash_abi):
-    factory.create_eth_flash(transact={})
-    eth_flash_address = factory.get_eth_flash(SUBSIDY_FACTOR)
+    factory.createEthFlash(transact={})
+    eth_flash_address = factory.getEthFlash(SUBSIDY_FACTOR)
     return ConciseContract(w3.eth.contract(
         address=eth_flash_address,
         abi=eth_flash_abi
@@ -95,8 +95,8 @@ def eth_flash(w3, factory, eth_flash_abi):
 
 @pytest.fixture
 def erc20_flash(w3, factory, erc20_flash_abi, HAY_token):
-    factory.create_erc20_flash(HAY_token.address, transact={})
-    erc20_flash_address = factory.get_erc20_flash(HAY_token.address, SUBSIDY_FACTOR)
+    factory.createErc20Flash(HAY_token.address, transact={})
+    erc20_flash_address = factory.getErc20Flash(HAY_token.address, SUBSIDY_FACTOR)
     return ConciseContract(w3.eth.contract(
         address=erc20_flash_address,
         abi=erc20_flash_abi
