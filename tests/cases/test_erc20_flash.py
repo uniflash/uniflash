@@ -61,7 +61,7 @@ def _init_test_flash(w3, erc20_flash, HAY_token, a1):
     assert HAY_token.balanceOf(a1) == INITIAL_ETH - ETH_DEPOSIT
     assert erc20_flash.balanceOf(a1) == ETH_DEPOSIT
 
-def test_flash_good_lender(w3, erc20_flash, HAY_token, factory, good_lender, assert_fail):
+def test_flash_good_lender(w3, erc20_flash, HAY_token, good_lender, assert_fail):
     a0, a1, a2 = w3.eth.accounts[:3]
     _init_test_flash(w3, erc20_flash, HAY_token, a1)
 
@@ -82,7 +82,7 @@ def test_flash_good_lender(w3, erc20_flash, HAY_token, factory, good_lender, ass
     assert erc20_flash.balanceOf(a1) == 0
     assert HAY_token.balanceOf(good_lender.address) == ETH_DEPOSIT - INTEREST
 
-def test_flash_bad_lender(w3, erc20_flash, HAY_token, factory, bad_lender, assert_fail):
+def test_flash_bad_lender(w3, erc20_flash, HAY_token, bad_lender, assert_fail):
     a0, a1, a2 = w3.eth.accounts[:3]
     _init_test_flash(w3, erc20_flash, HAY_token, a1)
 
@@ -90,7 +90,7 @@ def test_flash_bad_lender(w3, erc20_flash, HAY_token, factory, bad_lender, asser
     assert HAY_token.balanceOf(bad_lender.address) == ETH_DEPOSIT
     assert_fail(lambda: bad_lender.flash_loan_eth(erc20_flash.address, ETH_DEPOSIT, DEADLINE, transact={}))
 
-def test_flash_with_liquidity(w3, erc20_flash, HAY_token, factory, good_lender, assert_fail):
+def test_flash_with_liquidity(w3, erc20_flash, HAY_token, good_lender, assert_fail):
     a0, a1, a2, a3 = w3.eth.accounts[:4]
     _init_test_flash(w3, erc20_flash, HAY_token, a1)
 
