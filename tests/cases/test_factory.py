@@ -3,7 +3,7 @@ from pytest import raises
 from web3.contract import ConciseContract
 from eth_tester.exceptions import TransactionFailed
 
-from tests.contants import *
+from tests.constants import *
 
 def test_init(w3, eth_flash_template, erc20_flash_template, factory, pad_bytes32, eth_flash_abi, assert_fail):
     assert_fail(lambda: factory.initFactory(eth_flash_template.address, erc20_flash_template.address))

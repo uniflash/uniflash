@@ -1,4 +1,4 @@
-from tests.contants import *
+from tests.constants import *
 
 INTEREST = ETH_DEPOSIT * INTEREST_FACTOR // 10000
 

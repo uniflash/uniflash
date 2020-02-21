@@ -9,7 +9,7 @@ from eth_tester import EthereumTester, PyEVMBackend
 from eth_tester.exceptions import TransactionFailed
 from vyper import compiler
 
-from tests.contants import *
+from tests.constants import *
 
 setattr(eth_tester.backends.pyevm.main, 'GENESIS_GAS_LIMIT', 10**9)
 setattr(eth_tester.backends.pyevm.main, 'GENESIS_DIFFICULTY', 1)
