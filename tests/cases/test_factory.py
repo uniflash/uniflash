@@ -25,5 +25,5 @@ def test_factory(w3, eth_flash_template, factory, pad_bytes32, eth_flash_abi, as
     assert eth_flash.name() == pad_bytes32('Uniflash for ETH V1')
     assert eth_flash.symbol() == pad_bytes32('UFO-V1')
     assert eth_flash.totalSupply() == 0
-    assert eth_flash.subsidy_factor() == 8
+    assert eth_flash.subsidyFactor() == 8
     assert w3.eth.getBalance(eth_flash.address) == 0
