@@ -9,7 +9,7 @@ from eth_tester import EthereumTester, PyEVMBackend
 from eth_tester.exceptions import TransactionFailed
 from vyper import compiler
 
-from tests.contants import ETH_DEPOSIT
+from tests.contants import *
 
 setattr(eth_tester.backends.pyevm.main, 'GENESIS_GAS_LIMIT', 10**9)
 setattr(eth_tester.backends.pyevm.main, 'GENESIS_DIFFICULTY', 1)
@@ -28,12 +28,10 @@ def w3(tester):
 @pytest.fixture
 def pad_bytes32():
     def pad_bytes32(instr):
-        """ Pad a string \x00 bytes to return correct bytes32 representation. """
         bstr = instr.encode()
         return bstr + (32 - len(bstr)) * b'\x00'
     return pad_bytes32
 
-# @pytest.fixture
 def create_contract(w3, path):
     wd = os.path.dirname(os.path.realpath(__file__))
     with open(os.path.join(wd, os.pardir, path)) as f:
@@ -72,7 +70,7 @@ def eth_flash_abi():
 @pytest.fixture
 def eth_flash(w3, factory, eth_flash_abi):
     factory.create_eth_flash(transact={})
-    eth_flash_address = factory.get_eth_flash()
+    eth_flash_address = factory.get_eth_flash(SUBSIDY_FACTOR)
     return ConciseContract(w3.eth.contract(
         address=eth_flash_address,
         abi=eth_flash_abi

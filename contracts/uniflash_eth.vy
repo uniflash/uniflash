@@ -7,7 +7,7 @@ contract ETHLender():
     def defi(loan: uint256(wei), interest: uint256(wei)): modifying
 
 contract Factory():
-    def create_eth_flash() -> address: constant
+    def create_eth_flash(): constant
 
 AddLiquidity: event({provider: indexed(address), eth_amount: indexed(uint256(wei))})
 RemoveLiquidity: event({provider: indexed(address), eth_amount: indexed(uint256(wei))})
@@ -25,7 +25,7 @@ allowances: map(address, map(address, uint256(ufo)))
 
 @public
 def setup(subsidy_factor: uint256):
-    assert self.factoryAddress == ZERO_ADDRESS and self.subsidyFactor == 0 and subsidy_factor != 0
+    assert self.factoryAddress == ZERO_ADDRESS and self.subsidyFactor == 0 and subsidy_factor > 0
     self.factoryAddress = Factory(msg.sender)
     self.name = 0x556e69666c61736820666f722045544820563100000000000000000000000000
     self.symbol = 0x55464f2d56310000000000000000000000000000000000000000000000000000
