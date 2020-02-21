@@ -4,7 +4,7 @@ units: {
 
 contract ETHLender():
     # DeFi is all you want :)
-    def defi(loan: uint256(wei), interest: uint256(wei)): modifying
+    def ethDeFi(loan: uint256(wei), interest: uint256(wei)): modifying
 
 contract Factory():
     def create_eth_flash(): constant
@@ -90,7 +90,7 @@ def flash(eth_amount: uint256(wei), deadline: timestamp) -> uint256(wei):
     old_balance: uint256(wei) = self.balance
     send(msg.sender, eth_amount)
     subsidy: uint256(wei) = eth_amount * self.subsidyFactor / 10000
-    ETHLender(msg.sender).defi(eth_amount, subsidy)
+    ETHLender(msg.sender).ethDeFi(eth_amount, subsidy)
     assert self.totalSupply == old_liquidity
     assert self.balance >= old_balance + subsidy
     return subsidy

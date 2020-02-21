@@ -17,7 +17,7 @@ def __default__():
     pass
 
 @public
-def defi(loan: uint256(wei), interest: uint256(wei)):
+def ethDeFi(loan: uint256(wei), interest: uint256(wei)):
     to_return: uint256(wei) = loan + interest
     assert self.balance >= to_return
     if (not self.malicious):
