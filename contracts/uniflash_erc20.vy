@@ -1,9 +1,11 @@
+from vyper.interfaces import ERC20
+
 units: {
-    ufo: "UniFlashlOan"
+    ufo: "UniFlashlOan",
     erc: "ERC20"
 }
 
-contrat ERC20Lender():
+contract ERC20Lender():
     # DeFi is all you want :)
     def erc20DeFi(token_amount: uint256(erc), interest: uint256(erc)): modifying
 
@@ -16,7 +18,7 @@ Transfer: event({_from: indexed(address), to: indexed(address), value: uint256(u
 Approval: event({owner: indexed(address), spender: indexed(address), value: uint256(ufo)})
 
 factoryAddress: public(Factory)
-token: public(ERC20)
+token: public(address)
 name: public(bytes32)                                   # Uniflash for ETH V1
 symbol: public(bytes32)                                 # UFO-V1
 decimals: public(uint256)
@@ -28,10 +30,10 @@ allowances: map(address, map(address, uint256(ufo)))
 @public
 def setup(token_address: address, subsidy_factor: uint256):
     assert self.factoryAddress == ZERO_ADDRESS and \
-             self.token == ZERO_ADDRESS and token_address != ZERO_ADDRESS \
+             self.token == ZERO_ADDRESS and token_address != ZERO_ADDRESS and \
              self.subsidyFactor == 0 and subsidy_factor > 0
     self.factoryAddress = Factory(msg.sender)
-    self.token = ERC20(token_address)
+    self.token = token_address
     self.name = 0x556e69666c61736820666f722045544820563100000000000000000000000000
     self.symbol = 0x55464f2d56310000000000000000000000000000000000000000000000000000
     self.decimals = 18
@@ -42,20 +44,20 @@ def add_liquidity(provider: address, token_amount: uint256(erc)) -> uint256(ufo)
     assert token_amount >= 1_000_000_000_000_000
     old_liquidity: uint256(ufo) = self.totalSupply
     if old_liquidity > 0:
-        token_reserve: uint256(erc) = self.token.balanceOf(self)
+        token_reserve: uint256(erc) = ERC20(self.token).balanceOf(self)
         ufo_mint: uint256(ufo) = self.totalSupply * token_amount / token_reserve
         self.balances[provider] += ufo_mint
         self.totalSupply = old_liquidity + ufo_mint
-        assert self.token.transferFrom(provider, self, token_amount)
+        assert_modifiable(ERC20(self.token).transferFrom(provider, self, as_unitless_number(token_amount)))
         log.AddLiquidity(provider, token_amount)
         log.Transfer(ZERO_ADDRESS, provider, ufo_mint)
         return ufo_mint
     else:
         assert self.factoryAddress != ZERO_ADDRESS and self.token != ZERO_ADDRESS and self.subsidyFactor > 0
-        initial_ufo_mint: uint256(ufo) = token_amount
+        initial_ufo_mint: uint256(ufo) = as_unitless_number(token_amount)
         self.balances[provider] = initial_ufo_mint
         self.totalSupply = initial_ufo_mint
-        assert self.token.transferFrom(provider, self, token_amount)
+        assert_modifiable(ERC20(self.token).transferFrom(provider, self, as_unitless_number(token_amount)))
         log.AddLiquidity(provider, token_amount)
         log.Transfer(ZERO_ADDRESS, provider, initial_ufo_mint)
         return initial_ufo_mint
@@ -69,10 +71,10 @@ def addLiquidity(token_amount: uint256(erc)) -> uint256(ufo):
 def remove_liquidity(provider: address, ufo_amount: uint256(ufo)) -> uint256(erc):
     assert ufo_amount > 0
     old_liquidity: uint256(ufo) = self.totalSupply
-    token_amount: uint256(erc) = self.token.balancesOf(self) * ufo_amount / old_liquidity
+    token_amount: uint256(erc) = ERC20(self.token).balanceOf(self) * ufo_amount / old_liquidity
     self.balances[provider] -= ufo_amount
     self.totalSupply = old_liquidity -  ufo_amount
-    assert self.token.transfer(provider, token_amount)
+    assert_modifiable(ERC20(self.token).transfer(provider, as_unitless_number(token_amount)))
     log.RemoveLiquidity(provider, token_amount)
     log.Transfer(provider, ZERO_ADDRESS, ufo_amount)
     return token_amount
@@ -89,12 +91,12 @@ def withdraw() -> uint256(erc):
 @public
 def flash(token_amount: uint256(erc), deadline: timestamp) -> uint256(erc):
     old_liquidity: uint256(ufo) = self.totalSupply
-    old_balance: uint256(erc) = self.token.balanceOf(self)
-    assert self.token.transfer(msg.sender, token_amount)
+    old_balance: uint256(erc) = ERC20(self.token).balanceOf(self)
+    assert_modifiable(ERC20(self.token).transfer(msg.sender, as_unitless_number(token_amount)))
     subsidy: uint256(erc) = token_amount * self.subsidyFactor / 10000
     ERC20Lender(msg.sender).erc20DeFi(token_amount, subsidy)
     assert self.totalSupply == old_liquidity
-    assert self.token.balanceOf(self) >= old_balance + subsidy
+    assert ERC20(self.token).balanceOf(self) >= old_balance + subsidy
     return subsidy
 
 # ERC20 compatibility modified from uniswap and vyper

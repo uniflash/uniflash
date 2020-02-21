@@ -50,7 +50,18 @@ def eth_flash_template(w3):
     ))
 
 @pytest.fixture
-def factory(w3, eth_flash_template):
+def erc20_flash_template(w3):
+    deploy = create_contract(w3, 'contracts/uniflash_erc20.vy')
+    tx_hash = deploy.constructor().transact()
+    tx_receipt = w3.eth.getTransactionReceipt(tx_hash)
+    return ConciseContract(w3.eth.contract(
+        address=tx_receipt.contractAddress,
+        abi=deploy.abi
+    ))
+
+
+@pytest.fixture
+def factory(w3, eth_flash_template, erc20_flash_template):
     deploy = create_contract(w3, 'contracts/uniflash_factory.vy')
     tx_hash = deploy.constructor().transact()
     tx_receipt = w3.eth.getTransactionReceipt(tx_hash)
@@ -58,13 +69,19 @@ def factory(w3, eth_flash_template):
         address=tx_receipt.contractAddress,
         abi=deploy.abi
     ))
-    contract.init_factory(eth_flash_template.address, transact={})
+    contract.init_factory(eth_flash_template.address, erc20_flash_template.address, transact={})
     return contract
 
 @pytest.fixture
 def eth_flash_abi():
     wd = os.path.dirname(os.path.realpath(__file__))
     code = open(os.path.join(wd, os.pardir, 'contracts/uniflash_eth.vy')).read()
+    return compiler.mk_full_signature(code)
+
+@pytest.fixture
+def erc20_flash_abi():
+    wd = os.path.dirname(os.path.realpath(__file__))
+    code = open(os.path.join(wd, os.pardir, 'contracts/uniflash_erc20.vy')).read()
     return compiler.mk_full_signature(code)
 
 @pytest.fixture
@@ -76,9 +93,28 @@ def eth_flash(w3, factory, eth_flash_abi):
         abi=eth_flash_abi
     ))
 
-def eth_lender_template(w3, malicious):
+@pytest.fixture
+def erc20_flash(w3, factory, erc20_flash_abi, HAY_token):
+    factory.create_erc20_flash(HAY_token.address, transact={})
+    erc20_flash_address = factory.get_erc20_flash(HAY_token.address, SUBSIDY_FACTOR)
+    return ConciseContract(w3.eth.contract(
+        address=erc20_flash_address,
+        abi=erc20_flash_abi
+    ))
+
+@pytest.fixture
+def HAY_token(w3):
+    deploy = create_contract(w3, 'contracts/test_contracts/ERC20.vy')
+    tx_hash = deploy.constructor(b'HAY Token', b'HAY', 18, TOTAL_HAY).transact()
+    tx_receipt = w3.eth.getTransactionReceipt(tx_hash)
+    return ConciseContract(w3.eth.contract(
+        address=tx_receipt.contractAddress,
+        abi=deploy.abi
+    ))
+
+def lender_template(w3, malicious, HAY_token):
     deploy = create_contract(w3, 'contracts/test_contracts/ETHLender.vy')
-    tx_hash = deploy.constructor(malicious).transact()
+    tx_hash = deploy.constructor(malicious, HAY_token.address).transact()
     tx_receipt = w3.eth.getTransactionReceipt(tx_hash)
     return ConciseContract(w3.eth.contract(
         address=tx_receipt.contractAddress,
@@ -86,26 +122,12 @@ def eth_lender_template(w3, malicious):
     ))
 
 @pytest.fixture
-def good_eth_lender(w3):
-    deploy = create_contract(w3, 'contracts/test_contracts/ETHLender.vy')
-    tx_hash = deploy.constructor(False).transact()
-    tx_receipt = w3.eth.getTransactionReceipt(tx_hash)
-    contract = ConciseContract(w3.eth.contract(
-        address=tx_receipt.contractAddress,
-        abi=deploy.abi
-    ))
-    return contract
+def good_lender(w3, HAY_token):
+    return lender_template(w3, False, HAY_token)
 
 @pytest.fixture
-def bad_eth_lender(w3):
-    deploy = create_contract(w3, 'contracts/test_contracts/ETHLender.vy')
-    tx_hash = deploy.constructor(True).transact()
-    tx_receipt = w3.eth.getTransactionReceipt(tx_hash)
-    contract = ConciseContract(w3.eth.contract(
-        address=tx_receipt.contractAddress,
-        abi=deploy.abi
-    ))
-    return contract
+def bad_lender(w3, HAY_token):
+    return lender_template(w3, True, HAY_token)
 
 @pytest.fixture
 def assert_fail():
