@@ -54,21 +54,30 @@ def addLiquidity() -> uint256(ufo):
     return self.add_liquidity(msg.sender, msg.value)
 
 @public
-def removeLiquidity(ufo_amount: uint256(ufo)) -> uint256(wei):
-    assert ufo_amount > 0
-    old_liquidity: uint256(ufo) = self.totalSupply
-    eth_amount: uint256(wei) = self.balance * ufo_amount / old_liquidity
-    self.balances[msg.sender] -= ufo_amount
-    self.totalSupply = old_liquidity -  ufo_amount
-    send(msg.sender, eth_amount)
-    log.RemoveLiquidity(msg.sender, eth_amount)
-    log.Transfer(msg.sender, ZERO_ADDRESS, ufo_amount)
-    return eth_amount
-
-@public
 @payable
 def __default__():
     self.add_liquidity(msg.sender, msg.value)
+
+@private
+def remove_liquidity(provider: address, ufo_amount: uint256(ufo)) -> uint256(wei):
+    assert ufo_amount > 0
+    old_liquidity: uint256(ufo) = self.totalSupply
+    eth_amount: uint256(wei) = self.balance * ufo_amount / old_liquidity
+    self.balances[provider] -= ufo_amount
+    self.totalSupply = old_liquidity -  ufo_amount
+    send(provider, eth_amount)
+    log.RemoveLiquidity(provider, eth_amount)
+    log.Transfer(provider, ZERO_ADDRESS, ufo_amount)
+    return eth_amount
+
+@public
+def removeLiquidity(ufo_amount: uint256(ufo)) -> uint256(wei):
+    return self.remove_liquidity(msg.sender, ufo_amount)
+
+@public
+def withdraw() -> uint256(wei):
+    ufo_amount: uint256(ufo) = self.balances[msg.sender]
+    return self.remove_liquidity(msg.sender, ufo_amount)
 
 @public
 def flash(eth_amount: uint256(wei), deadline: timestamp) -> uint256(wei):
