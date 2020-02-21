@@ -35,7 +35,7 @@ def setup(subsidy_factor: uint256):
 
 @private
 def add_liquidity(provider: address, eth_amount: uint256(wei)) -> uint256(ufo):
-    assert eth_amount >= 1_000_000_000_000_000
+    assert eth_amount >= 1_000_000_000_000
     old_liquidity: uint256(ufo) = self.totalSupply
     if old_liquidity > 0:
         eth_reserve: uint256(wei) = self.balance - eth_amount

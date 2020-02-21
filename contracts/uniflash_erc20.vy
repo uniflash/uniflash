@@ -41,7 +41,7 @@ def setup(token_address: address, subsidy_factor: uint256):
 
 @private
 def add_liquidity(provider: address, erc20_amount: uint256(erc)) -> uint256(ufo):
-    assert erc20_amount >= 1_000_000_000_000_000
+    assert erc20_amount >= 1_000_000_000_000
     old_liquidity: uint256(ufo) = self.totalSupply
     if old_liquidity > 0:
         token_reserve: uint256(erc) = ERC20(self.token).balanceOf(self)
