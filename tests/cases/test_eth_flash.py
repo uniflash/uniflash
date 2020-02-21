@@ -1,6 +1,6 @@
 from tests.contants import *
 
-INTEREST = ETH_DEPOSIT * SUBSIDY_FACTOR // 10000
+INTEREST = ETH_DEPOSIT * INTEREST_FACTOR // 10000
 
 def _test_add_liquidity(w3, eth_flash, assert_fail, add_liquidity):
     a0, a1, a2 = w3.eth.accounts[:3]

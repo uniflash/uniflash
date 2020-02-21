@@ -18,20 +18,20 @@ factoryAddress: public(Factory)
 name: public(bytes32)                                   # Uniflash for ETH V1
 symbol: public(bytes32)                                 # UFO-V1
 decimals: public(uint256)
-subsidyFactor: public(uint256)                          # subsidy rate = factor / 10000
+interestFactor: public(uint256)                         # interest rate = factor / 10000
 totalSupply: public(uint256(ufo))
 balances: map(address, uint256(ufo))
 allowances: map(address, map(address, uint256(ufo)))
 
 @public
-def setup(subsidy_factor: uint256):
+def setup(interest_factor: uint256):
     assert self.factoryAddress == ZERO_ADDRESS and \
-             self.subsidyFactor == 0 and subsidy_factor > 0
+             self.interestFactor == 0 and interest_factor > 0
     self.factoryAddress = Factory(msg.sender)
     self.name = 0x556e69666c61736820666f722045544820563100000000000000000000000000
     self.symbol = 0x55464f2d56310000000000000000000000000000000000000000000000000000
     self.decimals = 18
-    self.subsidyFactor = subsidy_factor
+    self.interestFactor = interest_factor
 
 @private
 def add_liquidity(provider: address, eth_amount: uint256(wei)) -> uint256(ufo):
@@ -46,7 +46,7 @@ def add_liquidity(provider: address, eth_amount: uint256(wei)) -> uint256(ufo):
         log.Transfer(ZERO_ADDRESS, provider, ufo_mint)
         return ufo_mint
     else:
-        assert self.subsidyFactor != 0
+        assert self.interestFactor != 0
         initial_ufo_mint: uint256(ufo) = as_unitless_number(self.balance)
         self.balances[provider] = initial_ufo_mint
         self.totalSupply = initial_ufo_mint
@@ -90,11 +90,11 @@ def flash(eth_amount: uint256(wei), deadline: timestamp) -> uint256(wei):
     old_liquidity: uint256(ufo) = self.totalSupply
     old_balance: uint256(wei) = self.balance
     send(msg.sender, eth_amount)
-    subsidy: uint256(wei) = eth_amount * self.subsidyFactor / 10000
-    ETHLender(msg.sender).ethDeFi(eth_amount, subsidy)
+    interest: uint256(wei) = eth_amount * self.interestFactor / 10000
+    ETHLender(msg.sender).ethDeFi(eth_amount, interest)
     assert self.totalSupply == old_liquidity
-    assert self.balance >= old_balance + subsidy
-    return subsidy
+    assert self.balance >= old_balance + interest
+    return interest
 
 @public
 @payable

@@ -1,6 +1,6 @@
 from tests.contants import *
 
-INTEREST = ETH_DEPOSIT * SUBSIDY_FACTOR // 10000
+INTEREST = ETH_DEPOSIT * INTEREST_FACTOR // 10000
 
 def init_hay_balance(w3, erc20_flash, HAY_token):
     for account in w3.eth.accounts[:4]:
