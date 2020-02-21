@@ -15,17 +15,18 @@ Transfer: event({_from: indexed(address), to: indexed(address), value: uint256(u
 Approval: event({owner: indexed(address), spender: indexed(address), value: uint256(ufo)})
 
 factoryAddress: public(Factory)
-name: public(bytes32)                               # Uniflash for ETH V1
-symbol: public(bytes32)                             # UFO-V1
+name: public(bytes32)                                   # Uniflash for ETH V1
+symbol: public(bytes32)                                 # UFO-V1
 decimals: public(uint256)
-subsidyFactor: public(uint256)                     # subsidy rate = factor / 10000
+subsidyFactor: public(uint256)                          # subsidy rate = factor / 10000
 totalSupply: public(uint256(ufo))
 balances: map(address, uint256(ufo))
 allowances: map(address, map(address, uint256(ufo)))
 
 @public
 def setup(subsidy_factor: uint256):
-    assert self.factoryAddress == ZERO_ADDRESS and self.subsidyFactor == 0 and subsidy_factor > 0
+    assert self.factoryAddress == ZERO_ADDRESS and \
+             self.subsidyFactor == 0 and subsidy_factor > 0
     self.factoryAddress = Factory(msg.sender)
     self.name = 0x556e69666c61736820666f722045544820563100000000000000000000000000
     self.symbol = 0x55464f2d56310000000000000000000000000000000000000000000000000000
@@ -97,7 +98,7 @@ def flash(eth_amount: uint256(wei), deadline: timestamp) -> uint256(wei):
 
 @public
 @payable
-def return_loan():
+def returnLoan():
     pass
 
 # ERC20 compatibility modified from uniswap and vyper
