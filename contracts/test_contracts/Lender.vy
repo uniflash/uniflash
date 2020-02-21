@@ -12,7 +12,6 @@ malicious: bool
 token: address
 
 @public
-@payable
 def __init__(_malicious: bool, _token: address):
     self.malicious = _malicious
     self.token = _token
