@@ -1,5 +1,7 @@
 from tests.contants import *
 
+INTEREST = ETH_DEPOSIT * SUBSIDY_FACTOR // 10000
+
 def _test_add_liquidity(w3, eth_flash, assert_fail, add_liquidity):
     a0, a1, a2 = w3.eth.accounts[:3]
     assert_fail(lambda: w3.eth.sendTransaction({'to': eth_flash.address, 'value': 0, 'from': a1}))
@@ -63,20 +65,19 @@ def test_flash_good_lender(w3, eth_flash, factory, good_eth_lender, assert_fail)
     w3.eth.sendTransaction({'to': good_eth_lender.address, 'value': ETH_DEPOSIT})
     assert w3.eth.getBalance(good_eth_lender.address) == ETH_DEPOSIT
     good_eth_lender.flash_loan_eth(eth_flash.address, ETH_DEPOSIT, DEADLINE, transact={})
-    interest = ETH_DEPOSIT * 8 // 10000
-    assert w3.eth.getBalance(eth_flash.address) == ETH_DEPOSIT + interest
+    assert w3.eth.getBalance(eth_flash.address) == ETH_DEPOSIT + INTEREST
     assert eth_flash.totalSupply() == ETH_DEPOSIT
     assert w3.eth.getBalance(a1) == INITIAL_ETH - ETH_DEPOSIT
     assert eth_flash.balanceOf(a1) == ETH_DEPOSIT
-    assert w3.eth.getBalance(good_eth_lender.address) == ETH_DEPOSIT - interest
+    assert w3.eth.getBalance(good_eth_lender.address) == ETH_DEPOSIT - INTEREST
 
     eth_flash.removeLiquidity(ETH_DEPOSIT, transact={'from': a1})
     assert_fail(lambda: eth_flash.removeLiquidity(ETH_DEPOSIT, transact={'from': a2}))
     assert w3.eth.getBalance(eth_flash.address) == 0
     assert eth_flash.totalSupply() == 0
-    assert w3.eth.getBalance(a1) == INITIAL_ETH + interest
+    assert w3.eth.getBalance(a1) == INITIAL_ETH + INTEREST
     assert eth_flash.balanceOf(a1) == 0
-    assert w3.eth.getBalance(good_eth_lender.address) == ETH_DEPOSIT - interest
+    assert w3.eth.getBalance(good_eth_lender.address) == ETH_DEPOSIT - INTEREST
 
 def test_flash_bad_lender(w3, eth_flash, factory, bad_eth_lender, assert_fail):
     a0, a1, a2 = w3.eth.accounts[:3]
