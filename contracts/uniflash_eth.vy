@@ -6,11 +6,15 @@ contract ETHLender():
     # DeFi is all you want :)
     def defi(loan: uint256(wei), interest: uint256(wei)): modifying
 
+contract Factory():
+    def create_eth_flash() -> address: constant
+
 AddLiquidity: event({provider: indexed(address), eth_amount: indexed(uint256(wei))})
 RemoveLiquidity: event({provider: indexed(address), eth_amount: indexed(uint256(wei))})
 Transfer: event({_from: indexed(address), to: indexed(address), value: uint256(ufo)})
 Approval: event({owner: indexed(address), spender: indexed(address), value: uint256(ufo)})
 
+factoryAddress: public(Factory)
 name: public(bytes32)                               # Uniflash for ETH V1
 symbol: public(bytes32)                             # UFO-V1
 decimals: public(uint256)
@@ -21,7 +25,8 @@ allowances: map(address, map(address, uint256(ufo)))
 
 @public
 def setup(_subsidy_factor: uint256):
-    assert self.totalSupply == 0 and self.subsidy_factor == 0 and _subsidy_factor != 0
+    assert self.factoryAddress == ZERO_ADDRESS and self.subsidy_factor == 0 and _subsidy_factor != 0
+    self.factoryAddress = Factory(msg.sender)
     self.name = 0x556e69666c61736820666f722045544820563100000000000000000000000000
     self.symbol = 0x55464f2d56310000000000000000000000000000000000000000000000000000
     self.decimals = 18

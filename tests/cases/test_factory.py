@@ -21,6 +21,7 @@ def test_factory(w3, eth_flash_template, factory, pad_bytes32, eth_flash_abi, as
     # Can't call setup on exchange
     assert_fail(lambda: eth_flash.setup())
     # Exchange initial state
+    assert eth_flash.factoryAddress() == factory.address
     assert eth_flash.name() == pad_bytes32('Uniflash for ETH V1')
     assert eth_flash.symbol() == pad_bytes32('UFO-V1')
     assert eth_flash.totalSupply() == 0
