@@ -1,4 +1,5 @@
-# Note: this contract is only for testing
+# THIS CONTRACT IS ONLY FOR TESTING PURPOSES
+
 from vyper.interfaces import ERC20
 
 contract EthFlash():

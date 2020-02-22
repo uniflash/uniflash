@@ -1,3 +1,7 @@
+# @title Uniflash V1
+# @notice Source code found at https://github.com/uniflash
+# @notice Use at your own risk
+
 contract EthFlash():
     def setup(interest_factor: uint256): modifying
 
@@ -5,12 +9,12 @@ contract ERC20Flash():
     def setup(token_addr: address, interest_factor: uint256): modifying
 
 # @notice The interest rate for loan x is: interest_factor / 10000
-MAX_INTEREST_FACTOR: constant(uint256) = 10
+MAX_SUBSIDY_FACTOR: constant(uint256) = 10
 
 ethFlashTemplate: public(address)
 erc20FlashTempalte: public(address)
-eth_flash_addresses: address[MAX_INTEREST_FACTOR]
-erc20_flashes_addresses: map(address, address[MAX_INTEREST_FACTOR])
+eth_flash_addresses: address[MAX_SUBSIDY_FACTOR]
+erc20_flashes_addresses: map(address, address[MAX_SUBSIDY_FACTOR])
 
 @public
 def initFactory(eth_template: address, erc20_tempalte: address):
@@ -22,7 +26,7 @@ def initFactory(eth_template: address, erc20_tempalte: address):
 @public
 def createEthFlash():
     assert self.ethFlashTemplate != ZERO_ADDRESS and self.eth_flash_addresses[0] == ZERO_ADDRESS
-    for i in range(MAX_INTEREST_FACTOR):
+    for i in range(MAX_SUBSIDY_FACTOR):
         eth_flash_address: address = create_forwarder_to(self.ethFlashTemplate)
         self.eth_flash_addresses[i] = eth_flash_address
         interest_factor: uint256 = convert(i + 1, uint256)
@@ -31,7 +35,7 @@ def createEthFlash():
 @public
 def createErc20Flash(erc20: address):
     assert self.erc20FlashTempalte != ZERO_ADDRESS and self.erc20_flashes_addresses[erc20][0] == ZERO_ADDRESS and erc20 != ZERO_ADDRESS
-    for i in range(MAX_INTEREST_FACTOR):
+    for i in range(MAX_SUBSIDY_FACTOR):
         flash: address = create_forwarder_to(self.erc20FlashTempalte)
         self.erc20_flashes_addresses[erc20][i] = flash
         interest_factor: uint256 = convert(i + 1, uint256)

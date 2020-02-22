@@ -1,5 +1,4 @@
-# THIS CONTRACT IS FOR TESTING PURPOSES AND IS NOT PART OF THE PROJECT
-
+# THIS CONTRACT IS ONLY FOR TESTING
 # Modified from: https://github.com/vyperlang/vyper/blob/master/examples/tokens/ERC20.vy
 
 from vyper.interfaces import ERC20
