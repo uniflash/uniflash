@@ -86,7 +86,6 @@ def erc20_flash_abi():
 
 @pytest.fixture
 def eth_flash(w3, factory, eth_flash_abi):
-    factory.createEthFlash(transact={})
     eth_flash_address = factory.getEthFlash(INTEREST_FACTOR)
     return ConciseContract(w3.eth.contract(
         address=eth_flash_address,
