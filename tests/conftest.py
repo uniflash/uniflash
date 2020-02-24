@@ -112,7 +112,7 @@ def HAY_token(w3):
     ))
 
 def lender_template(w3, malicious, HAY_token):
-    deploy = create_contract(w3, 'contracts/test_contracts/Lender.vy')
+    deploy = create_contract(w3, 'contracts/test_contracts/Borrower.vy')
     tx_hash = deploy.constructor(malicious, HAY_token.address).transact()
     tx_receipt = w3.eth.getTransactionReceipt(tx_hash)
     return ConciseContract(w3.eth.contract(

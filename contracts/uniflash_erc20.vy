@@ -9,7 +9,7 @@ units: {
     erc: "ERC20"
 }
 
-contract ERC20Lender():
+contract ERC20Borrower():
     # DeFi is all you want :)
     def erc20DeFi(erc20_amount: uint256(erc), interest: uint256(erc)): modifying
 
@@ -98,7 +98,7 @@ def flash(erc20_amount: uint256(erc), deadline: timestamp) -> uint256(erc):
     old_balance: uint256(erc) = ERC20(self.token).balanceOf(self)
     assert_modifiable(ERC20(self.token).transfer(msg.sender, as_unitless_number(erc20_amount)))
     interest: uint256(erc) = erc20_amount * self.interestFactor / 10000
-    ERC20Lender(msg.sender).erc20DeFi(erc20_amount, interest)
+    ERC20Borrower(msg.sender).erc20DeFi(erc20_amount, interest)
     assert self.totalSupply == old_liquidity
     assert ERC20(self.token).balanceOf(self) >= old_balance + interest
     return interest

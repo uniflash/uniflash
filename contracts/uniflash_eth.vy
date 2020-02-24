@@ -6,7 +6,7 @@ units: {
     ufo: "UniFlashlOan"
 }
 
-contract ETHLender():
+contract ETHBorrower():
     # DeFi is all you want :)
     def ethDeFi(loan: uint256(wei), interest: uint256(wei)): modifying
 
@@ -92,7 +92,7 @@ def flash(eth_amount: uint256(wei), deadline: timestamp) -> uint256(wei):
     old_balance: uint256(wei) = self.balance
     send(msg.sender, eth_amount)
     interest: uint256(wei) = eth_amount * self.interestFactor / 10000
-    ETHLender(msg.sender).ethDeFi(eth_amount, interest)
+    ETHBorrower(msg.sender).ethDeFi(eth_amount, interest)
     assert self.totalSupply == old_liquidity
     assert self.balance >= old_balance + interest
     return interest
