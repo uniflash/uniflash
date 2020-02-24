@@ -6,7 +6,7 @@ Note that Uniflash is not audited yet, though there are enough test cases. It's 
 
 ## Try out
 
-One could use any smart contract interactor to play with Uniflash, e.g. https://justsmartcontracts.dev/. We might add a front-end similar to Uniswap later if the community likes the project.
+One could use any smart contract interactor to play with Uniflash, e.g. https://justsmartcontracts.dev/. It's able to add a front-end similar to Uniswap later if the community likes the project.
 
 Testing on Goerli network:
 1. Switch to Goerli network
@@ -20,11 +20,11 @@ One can create a Pool for any ERC20 token using `uniflash-factory`, and then fol
 
 ## Fee mechanism
 
-For each token (including Eth), we initialize 10 pools with fee rate ranging from 0.01%, 0.02%, to 0.10%. Users are free to choose a pool with a matched fee rate.
+For each token (including Eth), there are 10 pools initialized with fee rate ranging from 0.01%, 0.02%, to 0.10%. Users are free to choose a pool with a matched fee rate.
 
-Why don't we design a dynamic fee rate? The reasons are: 1. We don't want to use any price oracle to quantify the volume of each pool, so as to keep the protocol as simple as possible. 2. If the initial fee is high, then nobody would deposit. The protocol would be stuck in the cold-start phase. However, with the current design, users are able to switch between pools with different fee rates. 3. Even we set discrete fee rates, the pool size could change according to demands and supplies.
+Why not a dynamic fee rate? The reasons are: 1. It's done on purpose to avoid using any price oracle to quantify the volume of each pool, so as to keep the protocol as simple as possible. 2. If the initial fee is high, then nobody would deposit. The protocol would be stuck in the cold-start phase. However, with the current design, users are able to switch between pools with different fee rates. 3. Even though discrete fee rates are used, the pool sizes could change according to demands and supplies.
 
 ## Authors
 * Cheng Wang - [polarker](https://twitter.com/wachmc)
 
-We thank Uniswap for its pioneering work on DeFi design and implementation.
+Thank Uniswap for its pioneering work on DeFi design and implementation.
