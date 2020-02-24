@@ -4,6 +4,8 @@ Uniflash is a simple and decentralized protocol for flash loans, trying to follo
 
 Note that Uniflash is not audited yet, though there are enough test cases. It's currently deployed on the Goerli network for testing.
 
+*For discussing and contributing to the next of Uniflash, please join this telegram group [@Uniflash](https://t.me/Uniflash)*
+
 ## Try out
 
 One could use any smart contract interactor to play with Uniflash, e.g. https://justsmartcontracts.dev/. It's able to add a front-end similar to Uniswap later if the community likes the project.
