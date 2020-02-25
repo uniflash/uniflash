@@ -12,9 +12,10 @@ units: {
     ufo: "UniFlashlOan"
 }
 
+# note: we could not import from interface due to units
 contract ETHBorrower():
     # DeFi is all you want :)
-    def ethDeFi(loan: uint256(wei), interest: uint256(wei)): modifying
+    def ethDeFi(eth_amount: uint256(wei), interest: uint256(wei)): modifying
 
 AddLiquidity: event({provider: indexed(address), eth_amount: indexed(uint256(wei))})
 RemoveLiquidity: event({provider: indexed(address), eth_amount: indexed(uint256(wei))})

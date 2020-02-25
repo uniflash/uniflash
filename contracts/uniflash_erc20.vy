@@ -13,6 +13,7 @@ units: {
     erc: "ERC20"
 }
 
+# note: we could not import from interface due to units
 contract ERC20Borrower():
     # DeFi is all you want :)
     def erc20DeFi(erc20_amount: uint256(erc), interest: uint256(erc)): modifying
