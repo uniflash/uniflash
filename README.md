@@ -12,7 +12,7 @@ One could use any smart contract interactor to play with Uniflash, e.g. https://
 
 Testing on Goerli network:
 1. Switch to Goerli network
-2. Load `abi/uniflash-factory.json` with address: `0x09eb4Ffe5c05F34B27C169b4C21eB616158094Ae`
+2. Load `abi/uniflash-factory.json` with address: `0x5D63f7b00e3e7a33eD51E4BbCaA548B97A48B9cE`
 3. Get the flash-loan address of Eth by calling `getEthFlash` with any interest factor from 1 to 10 (e.g. 9 means 0.09% fee rate)
 4. Load `abi/uniflash-eth.json` with the address fetched in Step 3
 5. Now one could use `addLiquidity` and `removeLiquidity` to deposit and withdraw your Eth
