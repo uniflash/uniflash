@@ -104,7 +104,7 @@ def flash(erc20_amount: uint256(erc)) -> uint256(erc):
     interest: uint256(erc) = erc20_amount * self.interestFactor / 10000
     ERC20Borrower(msg.sender).erc20DeFi(erc20_amount, interest)
     assert self.totalSupply == old_liquidity
-    assert ERC20(self.token).balanceOf(self) >= old_balance + interest
+    assert ERC20(self.token).balanceOf(self) == old_balance + interest
     return interest
 
 # ERC20 compatibility modified from uniswap and vyper

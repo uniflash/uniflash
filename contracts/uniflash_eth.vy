@@ -77,7 +77,7 @@ def remove_liquidity(provider: address, ufo_amount: uint256(ufo)) -> uint256(wei
     old_liquidity: uint256(ufo) = self.totalSupply
     eth_amount: uint256(wei) = self.balance * ufo_amount / old_liquidity
     self.balances[provider] -= ufo_amount
-    self.totalSupply = old_liquidity -  ufo_amount
+    self.totalSupply = old_liquidity - ufo_amount
     send(provider, eth_amount)
     log.RemoveLiquidity(provider, eth_amount)
     log.Transfer(provider, ZERO_ADDRESS, ufo_amount)
@@ -100,7 +100,7 @@ def flash(eth_amount: uint256(wei)) -> uint256(wei):
     interest: uint256(wei) = eth_amount * self.interestFactor / 10000
     ETHBorrower(msg.sender).ethDeFi(eth_amount, interest)
     assert self.totalSupply == old_liquidity
-    assert self.balance >= old_balance + interest
+    assert self.balance == old_balance + interest
     return interest
 
 @public
