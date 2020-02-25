@@ -1,13 +1,14 @@
 import os
+from pathlib import Path
 import pytest
 from pytest import raises
 
 from web3 import Web3
-from web3.contract import ConciseContract
 import eth_tester
 from eth_tester import EthereumTester, PyEVMBackend
 from eth_tester.exceptions import TransactionFailed
 from vyper import compiler
+from vyper.cli.vyper_compile import compile_files
 
 from tests.constants import *
 
@@ -36,7 +37,9 @@ def create_contract(w3, path):
     wd = os.path.dirname(os.path.realpath(__file__))
     with open(os.path.join(wd, os.pardir, path)) as f:
         source = f.read()
-    out = compiler.compile_code(source, ['abi', 'bytecode'])
+    root_path = os.path.join(wd, os.pardir)
+    source_path = os.path.join(root_path, path)
+    out = compile_files([source_path], ['abi', 'bytecode'], root_path)[path]
     return w3.eth.contract(abi=out['abi'], bytecode=out['bytecode'])
 
 @pytest.fixture
@@ -44,81 +47,69 @@ def eth_flash_template(w3):
     deploy = create_contract(w3, 'contracts/uniflash_eth.vy')
     tx_hash = deploy.constructor().transact()
     tx_receipt = w3.eth.getTransactionReceipt(tx_hash)
-    return ConciseContract(w3.eth.contract(
+    return w3.eth.contract(
         address=tx_receipt.contractAddress,
         abi=deploy.abi
-    ))
+    )
 
 @pytest.fixture
 def erc20_flash_template(w3):
     deploy = create_contract(w3, 'contracts/uniflash_erc20.vy')
     tx_hash = deploy.constructor().transact()
     tx_receipt = w3.eth.getTransactionReceipt(tx_hash)
-    return ConciseContract(w3.eth.contract(
+    return w3.eth.contract(
         address=tx_receipt.contractAddress,
         abi=deploy.abi
-    ))
+    )
 
 
 @pytest.fixture
 def factory(w3, eth_flash_template, erc20_flash_template):
     deploy = create_contract(w3, 'contracts/uniflash_factory.vy')
     tx_hash = deploy.constructor().transact()
-    tx_receipt = w3.eth.getTransactionReceipt(tx_hash)
-    contract = ConciseContract(w3.eth.contract(
+    tx_receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+    contract = w3.eth.contract(
         address=tx_receipt.contractAddress,
         abi=deploy.abi
-    ))
-    contract.initFactory(eth_flash_template.address, erc20_flash_template.address, transact={})
+    )
+    contract.functions.initFactory(eth_flash_template.address, erc20_flash_template.address).transact()
     return contract
 
 @pytest.fixture
-def eth_flash_abi():
-    wd = os.path.dirname(os.path.realpath(__file__))
-    code = open(os.path.join(wd, os.pardir, 'contracts/uniflash_eth.vy')).read()
-    return compiler.mk_full_signature(code)
-
-@pytest.fixture
-def erc20_flash_abi():
-    wd = os.path.dirname(os.path.realpath(__file__))
-    code = open(os.path.join(wd, os.pardir, 'contracts/uniflash_erc20.vy')).read()
-    return compiler.mk_full_signature(code)
-
-@pytest.fixture
-def eth_flash(w3, factory, eth_flash_abi):
-    eth_flash_address = factory.getEthFlash(INTEREST_FACTOR)
-    return ConciseContract(w3.eth.contract(
+def eth_flash(w3, factory, eth_flash_template):
+    eth_flash_address = factory.caller.getEthFlash(INTEREST_FACTOR)
+    return w3.eth.contract(
         address=eth_flash_address,
-        abi=eth_flash_abi
-    ))
+        abi=eth_flash_template.abi
+    )
 
 @pytest.fixture
-def erc20_flash(w3, factory, erc20_flash_abi, HAY_token):
-    factory.createErc20Flash(HAY_token.address, transact={})
-    erc20_flash_address = factory.getErc20Flash(HAY_token.address, INTEREST_FACTOR)
-    return ConciseContract(w3.eth.contract(
+def erc20_flash(w3, factory, erc20_flash_template, HAY_token):
+    factory.functions.createErc20Flash(HAY_token.address).transact()
+    erc20_flash_address = factory.caller.getErc20Flash(HAY_token.address, INTEREST_FACTOR)
+    return w3.eth.contract(
         address=erc20_flash_address,
-        abi=erc20_flash_abi
-    ))
+        abi=erc20_flash_template.abi
+    )
 
 @pytest.fixture
 def HAY_token(w3):
     deploy = create_contract(w3, 'contracts/test_contracts/ERC20.vy')
     tx_hash = deploy.constructor(b'HAY Token', b'HAY', 18, TOTAL_HAY).transact()
     tx_receipt = w3.eth.getTransactionReceipt(tx_hash)
-    return ConciseContract(w3.eth.contract(
+    return w3.eth.contract(
         address=tx_receipt.contractAddress,
         abi=deploy.abi
-    ))
+    )
 
 def lender_template(w3, malicious, HAY_token):
     deploy = create_contract(w3, 'contracts/test_contracts/Borrower.vy')
     tx_hash = deploy.constructor(malicious, HAY_token.address).transact()
     tx_receipt = w3.eth.getTransactionReceipt(tx_hash)
-    return ConciseContract(w3.eth.contract(
+    return w3.eth.contract(
         address=tx_receipt.contractAddress,
         abi=deploy.abi
-    ))
+    )
 
 @pytest.fixture
 def good_lender(w3, HAY_token):

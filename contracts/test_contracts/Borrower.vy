@@ -1,13 +1,7 @@
 # THIS CONTRACT IS ONLY FOR TESTING PURPOSES
 
 from vyper.interfaces import ERC20
-
-contract EthFlash():
-    def flash(amount: uint256(wei), deadline: timestamp): modifying
-    def returnLoan(): modifying
-
-contract ERC20Flash():
-    def flash(amount: uint256, deadline: timestamp): modifying
+from interfaces import (EthFlash, ERC20Flash)
 
 malicious: bool
 token: address
