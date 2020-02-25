@@ -45,7 +45,7 @@ def test_remove_liquidity_wo_flash(w3, eth_flash, assert_fail):
     assert_fail(lambda: eth_flash.functions.removeLiquidity(1).transact({'from': a1}))
 
     assert_fail(lambda: eth_flash.functions.removeLiquidity(ETH_DEPOSIT + 1).transact({'from': a2}))
-    eth_flash.functions.removeLiquidity(ETH_DEPOSIT).transact({'from': a2})
+    eth_flash.functions.withdraw().transact({'from': a2})
     assert w3.eth.getBalance(eth_flash.address) == 0
     assert eth_flash.caller.totalSupply() == 0
     assert w3.eth.getBalance(a1) == INITIAL_ETH

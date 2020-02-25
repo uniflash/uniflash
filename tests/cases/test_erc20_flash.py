@@ -44,7 +44,7 @@ def test_remove_liquidity_wo_flash(w3, erc20_flash, HAY_token, assert_fail):
     assert_fail(lambda: erc20_flash.functions.removeLiquidity(1).transact({'from': a1}))
 
     assert_fail(lambda: erc20_flash.functions.removeLiquidity(ERC20_DEPOSIT + 1).transact({'from': a2}))
-    erc20_flash.functions.removeLiquidity(ERC20_DEPOSIT).transact({'from': a2})
+    erc20_flash.functions.withdraw().transact({'from': a2})
     assert HAY_token.caller.balanceOf(erc20_flash.address) == 0
     assert erc20_flash.caller.totalSupply() == 0
     assert HAY_token.caller.balanceOf(a1) == INITIAL_ERC20

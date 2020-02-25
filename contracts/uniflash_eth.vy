@@ -3,16 +3,16 @@
 # @notice Use at your own risk
 
 from vyper.interfaces import ERC20
-from interfaces import EthFlash
+from interfaces import ETHFlash
 
 implements: ERC20
-# implements: EthFlash # notice there is a bug related to function signature
+# implements: ETHFlash # notice there is a bug related to function signature
 
 units: {
     ufo: "UniFlashlOan"
 }
 
-# note: we could not import from interface due to units
+# note: we could not import this from interfaces due to units
 contract ETHBorrower():
     # DeFi is all you want :)
     def ethDeFi(eth_amount: uint256(wei), interest: uint256(wei)): modifying
