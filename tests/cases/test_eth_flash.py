@@ -61,18 +61,18 @@ def _init_test_flash(w3, eth_flash, a1):
     assert w3.eth.getBalance(a1) == INITIAL_ETH - ETH_DEPOSIT
     assert eth_flash.caller.balanceOf(a1) == ETH_DEPOSIT
 
-def test_flash_good_lender(w3, eth_flash, good_lender, assert_fail):
+def test_flash_good_borrower(w3, eth_flash, good_borrower, assert_fail):
     a0, a1, a2 = w3.eth.accounts[:3]
     _init_test_flash(w3, eth_flash, a1)
 
-    w3.eth.sendTransaction({'to': good_lender.address, 'value': ETH_DEPOSIT})
-    assert w3.eth.getBalance(good_lender.address) == ETH_DEPOSIT
-    good_lender.functions.flash_loan_eth(eth_flash.address, ETH_DEPOSIT).transact({})
+    w3.eth.sendTransaction({'to': good_borrower.address, 'value': ETH_DEPOSIT})
+    assert w3.eth.getBalance(good_borrower.address) == ETH_DEPOSIT
+    good_borrower.functions.flash_loan_eth(eth_flash.address, ETH_DEPOSIT).transact({})
     assert w3.eth.getBalance(eth_flash.address) == ETH_DEPOSIT + INTEREST
     assert eth_flash.caller.totalSupply() == ETH_DEPOSIT
     assert w3.eth.getBalance(a1) == INITIAL_ETH - ETH_DEPOSIT
     assert eth_flash.caller.balanceOf(a1) == ETH_DEPOSIT
-    assert w3.eth.getBalance(good_lender.address) == ETH_DEPOSIT - INTEREST
+    assert w3.eth.getBalance(good_borrower.address) == ETH_DEPOSIT - INTEREST
 
     eth_flash.functions.removeLiquidity(ETH_DEPOSIT).transact({'from': a1})
     assert_fail(lambda: eth_flash.functions.removeLiquidity(ETH_DEPOSIT).transact({'from': a2}))
@@ -80,28 +80,28 @@ def test_flash_good_lender(w3, eth_flash, good_lender, assert_fail):
     assert eth_flash.caller.totalSupply() == 0
     assert w3.eth.getBalance(a1) == INITIAL_ETH + INTEREST
     assert eth_flash.caller.balanceOf(a1) == 0
-    assert w3.eth.getBalance(good_lender.address) == ETH_DEPOSIT - INTEREST
+    assert w3.eth.getBalance(good_borrower.address) == ETH_DEPOSIT - INTEREST
 
-def test_flash_bad_lender(w3, eth_flash, bad_lender, assert_fail):
+def test_flash_bad_borrower(w3, eth_flash, bad_borrower, assert_fail):
     a0, a1, a2 = w3.eth.accounts[:3]
     _init_test_flash(w3, eth_flash, a1)
 
-    w3.eth.sendTransaction({'to': bad_lender.address, 'value': ETH_DEPOSIT})
-    assert w3.eth.getBalance(bad_lender.address) == ETH_DEPOSIT
-    assert_fail(lambda: bad_lender.functions.flash_loan_eth(eth_flash.address, ETH_DEPOSIT).transact({}))
+    w3.eth.sendTransaction({'to': bad_borrower.address, 'value': ETH_DEPOSIT})
+    assert w3.eth.getBalance(bad_borrower.address) == ETH_DEPOSIT
+    assert_fail(lambda: bad_borrower.functions.flash_loan_eth(eth_flash.address, ETH_DEPOSIT).transact({}))
 
-def test_flash_with_liquidity(w3, eth_flash, good_lender, assert_fail):
+def test_flash_with_liquidity(w3, eth_flash, good_borrower, assert_fail):
     a0, a1, a2, a3 = w3.eth.accounts[:4]
     _init_test_flash(w3, eth_flash, a1)
 
-    w3.eth.sendTransaction({'to': good_lender.address, 'value': ETH_DEPOSIT})
-    assert w3.eth.getBalance(good_lender.address) == ETH_DEPOSIT
-    good_lender.functions.flash_loan_eth(eth_flash.address, ETH_DEPOSIT).transact({})
+    w3.eth.sendTransaction({'to': good_borrower.address, 'value': ETH_DEPOSIT})
+    assert w3.eth.getBalance(good_borrower.address) == ETH_DEPOSIT
+    good_borrower.functions.flash_loan_eth(eth_flash.address, ETH_DEPOSIT).transact({})
     assert w3.eth.getBalance(eth_flash.address) == ETH_DEPOSIT + INTEREST
     assert eth_flash.caller.totalSupply() == ETH_DEPOSIT
     assert w3.eth.getBalance(a1) == INITIAL_ETH - ETH_DEPOSIT
     assert eth_flash.caller.balanceOf(a1) == ETH_DEPOSIT
-    assert w3.eth.getBalance(good_lender.address) == ETH_DEPOSIT - INTEREST
+    assert w3.eth.getBalance(good_borrower.address) == ETH_DEPOSIT - INTEREST
 
     eth_flash.functions.addLiquidity().transact({'value': ETH_DEPOSIT + INTEREST, 'from': a2})
     assert w3.eth.getBalance(eth_flash.address) == (ETH_DEPOSIT + INTEREST) * 2
@@ -111,14 +111,14 @@ def test_flash_with_liquidity(w3, eth_flash, good_lender, assert_fail):
     assert w3.eth.getBalance(a2) == INITIAL_ETH - ETH_DEPOSIT - INTEREST
     assert eth_flash.caller.balanceOf(a2) == ETH_DEPOSIT
 
-    good_lender.functions.flash_loan_eth(eth_flash.address, ETH_DEPOSIT).transact({})
+    good_borrower.functions.flash_loan_eth(eth_flash.address, ETH_DEPOSIT).transact({})
     assert w3.eth.getBalance(eth_flash.address) == ETH_DEPOSIT * 2 + INTEREST * 3
     assert eth_flash.caller.totalSupply() == ETH_DEPOSIT * 2
     assert w3.eth.getBalance(a1) == INITIAL_ETH - ETH_DEPOSIT
     assert eth_flash.caller.balanceOf(a1) == ETH_DEPOSIT
     assert w3.eth.getBalance(a2) == INITIAL_ETH - ETH_DEPOSIT - INTEREST
     assert eth_flash.caller.balanceOf(a2) == ETH_DEPOSIT
-    assert w3.eth.getBalance(good_lender.address) == ETH_DEPOSIT - INTEREST * 2
+    assert w3.eth.getBalance(good_borrower.address) == ETH_DEPOSIT - INTEREST * 2
 
     eth_flash.functions.addLiquidity().transact({'value': ETH_DEPOSIT + INTEREST * 3 // 2, 'from': a3})
     assert w3.eth.getBalance(eth_flash.address) == ETH_DEPOSIT * 3 + INTEREST * 9 // 2

@@ -102,7 +102,7 @@ def HAY_token(w3):
         abi=deploy.abi
     )
 
-def lender_template(w3, malicious, HAY_token):
+def borrower_template(w3, malicious, HAY_token):
     deploy = create_contract(w3, 'contracts/test_contracts/Borrower.vy')
     tx_hash = deploy.constructor(malicious, HAY_token.address).transact()
     tx_receipt = w3.eth.getTransactionReceipt(tx_hash)
@@ -112,12 +112,12 @@ def lender_template(w3, malicious, HAY_token):
     )
 
 @pytest.fixture
-def good_lender(w3, HAY_token):
-    return lender_template(w3, False, HAY_token)
+def good_borrower(w3, HAY_token):
+    return borrower_template(w3, False, HAY_token)
 
 @pytest.fixture
-def bad_lender(w3, HAY_token):
-    return lender_template(w3, True, HAY_token)
+def bad_borrower(w3, HAY_token):
+    return borrower_template(w3, True, HAY_token)
 
 @pytest.fixture
 def assert_fail():
