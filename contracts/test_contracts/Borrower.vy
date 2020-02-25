@@ -31,9 +31,9 @@ def erc20DeFi(loan: uint256, interest: uint256):
         ERC20(self.token).transfer(msg.sender, to_return)
 
 @public
-def flash_loan_eth(eth_flash: address, amount: uint256(wei), deadline: timestamp):
-    EthFlash(eth_flash).flash(amount, deadline)
+def flash_loan_eth(eth_flash: address, amount: uint256(wei)):
+    EthFlash(eth_flash).flash(amount)
 
 @public
-def flash_loan_erc20(erc20_flash: address, amount: uint256, deadline: timestamp):
-    ERC20Flash(erc20_flash).flash(amount, deadline)
+def flash_loan_erc20(erc20_flash: address, amount: uint256):
+    ERC20Flash(erc20_flash).flash(amount)

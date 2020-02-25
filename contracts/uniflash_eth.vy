@@ -2,6 +2,10 @@
 # @notice Source code found at https://github.com/uniflash
 # @notice Use at your own risk
 
+from interfaces import EthFlash
+
+# implements: EthFlash # notice there is a bug related to function signature
+
 units: {
     ufo: "UniFlashlOan"
 }
@@ -87,7 +91,7 @@ def withdraw() -> uint256(wei):
     return self.remove_liquidity(msg.sender, ufo_amount)
 
 @public
-def flash(eth_amount: uint256(wei), deadline: timestamp) -> uint256(wei):
+def flash(eth_amount: uint256(wei)) -> uint256(wei):
     old_liquidity: uint256(ufo) = self.totalSupply
     old_balance: uint256(wei) = self.balance
     send(msg.sender, eth_amount)

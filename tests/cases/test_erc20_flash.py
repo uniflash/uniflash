@@ -67,7 +67,7 @@ def test_flash_good_lender(w3, erc20_flash, HAY_token, good_lender, assert_fail)
 
     HAY_token.functions.transfer(good_lender.address, ETH_DEPOSIT).transact({})
     assert HAY_token.caller.balanceOf(good_lender.address) == ETH_DEPOSIT
-    good_lender.functions.flash_loan_eth(erc20_flash.address, ETH_DEPOSIT, DEADLINE).transact({})
+    good_lender.functions.flash_loan_eth(erc20_flash.address, ETH_DEPOSIT).transact({})
     assert HAY_token.caller.balanceOf(erc20_flash.address) == ETH_DEPOSIT + INTEREST
     assert erc20_flash.caller.totalSupply() == ETH_DEPOSIT
     assert HAY_token.caller.balanceOf(a1) == INITIAL_ETH - ETH_DEPOSIT
@@ -88,7 +88,7 @@ def test_flash_bad_lender(w3, erc20_flash, HAY_token, bad_lender, assert_fail):
 
     HAY_token.functions.transfer(bad_lender.address, ETH_DEPOSIT).transact({})
     assert HAY_token.caller.balanceOf(bad_lender.address) == ETH_DEPOSIT
-    assert_fail(lambda: bad_lender.functions.flash_loan_eth(erc20_flash.address, ETH_DEPOSIT, DEADLINE).transact({}))
+    assert_fail(lambda: bad_lender.functions.flash_loan_eth(erc20_flash.address, ETH_DEPOSIT).transact({}))
 
 def test_flash_with_liquidity(w3, erc20_flash, HAY_token, good_lender, assert_fail):
     a0, a1, a2, a3 = w3.eth.accounts[:4]
@@ -96,7 +96,7 @@ def test_flash_with_liquidity(w3, erc20_flash, HAY_token, good_lender, assert_fa
 
     HAY_token.functions.transfer(good_lender.address, ETH_DEPOSIT).transact({})
     assert HAY_token.caller.balanceOf(good_lender.address) == ETH_DEPOSIT
-    good_lender.functions.flash_loan_eth(erc20_flash.address, ETH_DEPOSIT, DEADLINE).transact({})
+    good_lender.functions.flash_loan_eth(erc20_flash.address, ETH_DEPOSIT).transact({})
     assert HAY_token.caller.balanceOf(erc20_flash.address) == ETH_DEPOSIT + INTEREST
     assert erc20_flash.caller.totalSupply() == ETH_DEPOSIT
     assert HAY_token.caller.balanceOf(a1) == INITIAL_ETH - ETH_DEPOSIT
@@ -111,7 +111,7 @@ def test_flash_with_liquidity(w3, erc20_flash, HAY_token, good_lender, assert_fa
     assert HAY_token.caller.balanceOf(a2) == INITIAL_ETH - ETH_DEPOSIT - INTEREST
     assert erc20_flash.caller.balanceOf(a2) == ETH_DEPOSIT
 
-    good_lender.functions.flash_loan_eth(erc20_flash.address, ETH_DEPOSIT, DEADLINE).transact({})
+    good_lender.functions.flash_loan_eth(erc20_flash.address, ETH_DEPOSIT).transact({})
     assert HAY_token.caller.balanceOf(erc20_flash.address) == ETH_DEPOSIT * 2 + INTEREST * 3
     assert erc20_flash.caller.totalSupply() == ETH_DEPOSIT * 2
     assert HAY_token.caller.balanceOf(a1) == INITIAL_ETH - ETH_DEPOSIT

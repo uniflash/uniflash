@@ -3,6 +3,10 @@
 # @notice Use at your own risk
 
 from vyper.interfaces import ERC20
+from interfaces import ERC20Flash
+
+implements: ERC20
+implements: ERC20Flash
 
 units: {
     ufo: "UniFlashlOan",
@@ -93,7 +97,7 @@ def withdraw() -> uint256(erc):
     return self.remove_liquidity(msg.sender, ufo_amount)
 
 @public
-def flash(erc20_amount: uint256(erc), deadline: timestamp) -> uint256(erc):
+def flash(erc20_amount: uint256(erc)) -> uint256(erc):
     old_liquidity: uint256(ufo) = self.totalSupply
     old_balance: uint256(erc) = ERC20(self.token).balanceOf(self)
     assert_modifiable(ERC20(self.token).transfer(msg.sender, as_unitless_number(erc20_amount)))
