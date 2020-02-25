@@ -2,8 +2,10 @@
 # @notice Source code found at https://github.com/uniflash
 # @notice Use at your own risk
 
+from vyper.interfaces import ERC20
 from interfaces import EthFlash
 
+implements: ERC20
 # implements: EthFlash # notice there is a bug related to function signature
 
 units: {

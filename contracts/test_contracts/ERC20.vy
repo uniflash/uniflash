@@ -11,9 +11,9 @@ Approval: event({_owner: indexed(address), _spender: indexed(address), _value: u
 name: public(string[64])
 symbol: public(string[32])
 decimals: public(uint256)
+totalSupply: public(uint256)
 balanceOf: public(map(address, uint256))
 allowances: map(address, map(address, uint256))
-total_supply: uint256
 minter: address
 
 
@@ -24,15 +24,9 @@ def __init__(_name: string[64], _symbol: string[32], _decimals: uint256, _supply
     self.symbol = _symbol
     self.decimals = _decimals
     self.balanceOf[msg.sender] = init_supply
-    self.total_supply = init_supply
+    self.totalSupply = init_supply
     self.minter = msg.sender
     log.Transfer(ZERO_ADDRESS, msg.sender, init_supply)
-
-
-@public
-@constant
-def totalSupply() -> uint256:
-    return self.total_supply
 
 
 @public
