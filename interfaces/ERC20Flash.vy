@@ -1,5 +1,5 @@
-# @param amount The amount of token to borrow
-# @return Amout of token paid as fee
+# @param amount The amount of the ERC20 token to borrow
+# @return The amout of the token paid as fee
 @public
 def flash(amount: uint256) -> uint256:
     pass
