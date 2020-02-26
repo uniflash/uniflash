@@ -32,6 +32,7 @@ def test_remove_liquidity_wo_flash(w3, erc20_flash, HAY_token, assert_fail):
     add_liquidity(erc20_flash, HAY_token, HAY_DEPOSIT, a1)
     add_liquidity(erc20_flash, HAY_token, HAY_DEPOSIT, a2)
 
+    assert_fail(lambda: erc20_flash.functions.removeLiquidity(0).transact({'from': a1}))
     assert_fail(lambda: erc20_flash.functions.removeLiquidity(ERC20_DEPOSIT + 1).transact({'from': a1}))
     erc20_flash.functions.removeLiquidity(ERC20_DEPOSIT).transact({'from': a1})
     assert_fail(lambda: erc20_flash.functions.removeLiquidity(ERC20_DEPOSIT).transact({'from': a0}))

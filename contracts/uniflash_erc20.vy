@@ -41,7 +41,7 @@ allowances: map(address, map(address, uint256(ufo)))
 def setup(token_address: address, interest_factor: uint256):
     assert self.factoryAddress == ZERO_ADDRESS and \
              self.token == ZERO_ADDRESS and token_address != ZERO_ADDRESS and \
-             self.interestFactor == 0 and interest_factor > 0
+             self.interestFactor == 0 and interest_factor != 0
     self.factoryAddress = Factory(msg.sender)
     self.token = token_address
     self.name = 0x556e69666c61736820666f722045544820563100000000000000000000000000
@@ -63,7 +63,7 @@ def add_liquidity(provider: address, erc20_amount: uint256(erc)) -> uint256(ufo)
         log.Transfer(ZERO_ADDRESS, provider, ufo_mint)
         return ufo_mint
     else:
-        assert self.factoryAddress != ZERO_ADDRESS and self.token != ZERO_ADDRESS and self.interestFactor > 0
+        assert self.interestFactor > 0
         initial_ufo_mint: uint256(ufo) = as_unitless_number(erc20_amount)
         self.balances[provider] = initial_ufo_mint
         self.totalSupply = initial_ufo_mint
@@ -83,7 +83,7 @@ def remove_liquidity(provider: address, ufo_amount: uint256(ufo)) -> uint256(erc
     old_liquidity: uint256(ufo) = self.totalSupply
     erc20_amount: uint256(erc) = ERC20(self.token).balanceOf(self) * ufo_amount / old_liquidity
     self.balances[provider] -= ufo_amount
-    self.totalSupply = old_liquidity -  ufo_amount
+    self.totalSupply = old_liquidity - ufo_amount
     assert_modifiable(ERC20(self.token).transfer(provider, as_unitless_number(erc20_amount)))
     log.RemoveLiquidity(provider, erc20_amount)
     log.Transfer(provider, ZERO_ADDRESS, ufo_amount)
@@ -100,6 +100,7 @@ def withdraw() -> uint256(erc):
 
 @public
 def flash(erc20_amount: uint256(erc)) -> uint256(erc):
+    assert erc20_amount > 0
     old_liquidity: uint256(ufo) = self.totalSupply
     old_balance: uint256(erc) = ERC20(self.token).balanceOf(self)
     assert_modifiable(ERC20(self.token).transfer(msg.sender, as_unitless_number(erc20_amount)))

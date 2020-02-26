@@ -33,6 +33,7 @@ def test_remove_liquidity_wo_flash(w3, eth_flash, assert_fail):
     eth_flash.functions.addLiquidity().transact({'value': ETH_DEPOSIT, 'from': a1})
     eth_flash.functions.addLiquidity().transact({'value': ETH_DEPOSIT, 'from': a2})
 
+    assert_fail(lambda: eth_flash.functions.removeLiquidity(0).transact({'from': a1}))
     assert_fail(lambda: eth_flash.functions.removeLiquidity(ETH_DEPOSIT + 1).transact({'from': a1}))
     eth_flash.functions.removeLiquidity(ETH_DEPOSIT).transact({'from': a1})
     assert_fail(lambda: eth_flash.functions.removeLiquidity(ETH_DEPOSIT).transact({'from': a0}))

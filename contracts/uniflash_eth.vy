@@ -96,6 +96,7 @@ def withdraw() -> uint256(wei):
 
 @public
 def flash(eth_amount: uint256(wei)) -> uint256(wei):
+    assert eth_amount > 0
     old_liquidity: uint256(ufo) = self.totalSupply
     old_balance: uint256(wei) = self.balance
     send(msg.sender, eth_amount)
