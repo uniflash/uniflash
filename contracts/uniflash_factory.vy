@@ -8,13 +8,16 @@ contract EthFlash():
 contract ERC20Flash():
     def setup(token_addr: address, interest_factor: uint256): modifying
 
+NewETHFlash: event({interest_factor: uint256, flash_pool: indexed(address)})
+NewERC20Flash: event({token_address: indexed(address), interest_factor: uint256, flash_pool: indexed(address)})
+
 # @notice The interest rate for loan x is: interest_factor / 10000
 MAX_SUBSIDY_FACTOR: constant(uint256) = 10
 
 ethFlashTemplate: public(address)
 erc20FlashTempalte: public(address)
 eth_flash_addresses: address[MAX_SUBSIDY_FACTOR]
-erc20_flashes_addresses: map(address, address[MAX_SUBSIDY_FACTOR])
+erc20_flash_addresses: map(address, address[MAX_SUBSIDY_FACTOR])
 
 @private
 def createEthFlash():
@@ -24,6 +27,7 @@ def createEthFlash():
         self.eth_flash_addresses[i] = eth_flash_address
         interest_factor: uint256 = convert(i + 1, uint256)
         EthFlash(eth_flash_address).setup(interest_factor)       # interest rate: (i + 1) / 10000
+        log.NewETHFlash(interest_factor, eth_flash_address)
 
 @public
 def initFactory(eth_template: address, erc20_tempalte: address):
@@ -35,12 +39,13 @@ def initFactory(eth_template: address, erc20_tempalte: address):
 
 @public
 def createErc20Flash(erc20: address):
-    assert self.erc20FlashTempalte != ZERO_ADDRESS and self.erc20_flashes_addresses[erc20][0] == ZERO_ADDRESS and erc20 != ZERO_ADDRESS
+    assert self.erc20FlashTempalte != ZERO_ADDRESS and self.erc20_flash_addresses[erc20][0] == ZERO_ADDRESS and erc20 != ZERO_ADDRESS
     for i in range(MAX_SUBSIDY_FACTOR):
-        flash: address = create_forwarder_to(self.erc20FlashTempalte)
-        self.erc20_flashes_addresses[erc20][i] = flash
+        erc20_flash_address: address = create_forwarder_to(self.erc20FlashTempalte)
+        self.erc20_flash_addresses[erc20][i] = erc20_flash_address
         interest_factor: uint256 = convert(i + 1, uint256)
-        ERC20Flash(flash).setup(erc20, interest_factor)
+        ERC20Flash(erc20_flash_address).setup(erc20, interest_factor)
+        log.NewERC20Flash(erc20, interest_factor, erc20_flash_address)
 
 @public
 @constant
@@ -51,6 +56,6 @@ def getEthFlash(interest_factor: uint256) -> address:
 @constant
 def getErc20Flash(erc20: address, interest_factor: uint256) -> address:
     index: uint256 = interest_factor - 1
-    flash_address: address = self.erc20_flashes_addresses[erc20][index]
+    flash_address: address = self.erc20_flash_addresses[erc20][index]
     assert flash_address != ZERO_ADDRESS
     return flash_address

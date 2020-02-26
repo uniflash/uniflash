@@ -21,8 +21,9 @@ contract ERC20Borrower():
 contract Factory():
     def createErc20Flash(token_address: address): constant
 
-AddLiquidity: event({provider: indexed(address), erc20_amount: indexed(uint256(erc))})
-RemoveLiquidity: event({provider: indexed(address), erc20_amount: indexed(uint256(erc))})
+AddLiquidity: event({provider: indexed(address), erc20_amount: uint256(erc)})
+RemoveLiquidity: event({provider: indexed(address), erc20_amount: uint256(erc)})
+Flash: event({borrower: indexed(address), eth_amount: uint256(erc), interest: uint256(erc)})
 Transfer: event({_from: indexed(address), to: indexed(address), value: uint256(ufo)})
 Approval: event({owner: indexed(address), spender: indexed(address), value: uint256(ufo)})
 
@@ -106,6 +107,7 @@ def flash(erc20_amount: uint256(erc)) -> uint256(erc):
     ERC20Borrower(msg.sender).erc20DeFi(erc20_amount, interest)
     assert self.totalSupply == old_liquidity
     assert ERC20(self.token).balanceOf(self) == old_balance + interest
+    log.Flash(msg.sender, erc20_amount, interest)
     return interest
 
 # ERC20 compatibility modified from uniswap and vyper

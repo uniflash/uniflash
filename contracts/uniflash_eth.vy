@@ -6,7 +6,7 @@ from vyper.interfaces import ERC20
 from interfaces import ETHFlash
 
 implements: ERC20
-# implements: ETHFlash # notice there is a bug related to function signature
+# implements: ETHFlash # note: there is a vyper bug related to function signature
 
 units: {
     ufo: "UniFlashlOan"
@@ -17,8 +17,9 @@ contract ETHBorrower():
     # DeFi is all you want :)
     def ethDeFi(eth_amount: uint256(wei), interest: uint256(wei)): modifying
 
-AddLiquidity: event({provider: indexed(address), eth_amount: indexed(uint256(wei))})
-RemoveLiquidity: event({provider: indexed(address), eth_amount: indexed(uint256(wei))})
+AddLiquidity: event({provider: indexed(address), eth_amount: uint256(wei)})
+RemoveLiquidity: event({provider: indexed(address), eth_amount: uint256(wei)})
+Flash: event({borrower: indexed(address), eth_amount: uint256(wei), interest: uint256(wei)})
 Transfer: event({_from: indexed(address), to: indexed(address), value: uint256(ufo)})
 Approval: event({owner: indexed(address), spender: indexed(address), value: uint256(ufo)})
 
@@ -102,6 +103,7 @@ def flash(eth_amount: uint256(wei)) -> uint256(wei):
     ETHBorrower(msg.sender).ethDeFi(eth_amount, interest)
     assert self.totalSupply == old_liquidity
     assert self.balance == old_balance + interest
+    log.Flash(msg.sender, eth_amount, interest)
     return interest
 
 @public
