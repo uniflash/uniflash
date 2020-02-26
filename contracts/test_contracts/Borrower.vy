@@ -1,7 +1,7 @@
 # THIS CONTRACT IS ONLY FOR TESTING PURPOSES
 
 from vyper.interfaces import ERC20
-from interfaces import (EthFlash, ERC20Flash)
+from interfaces import (ETHFlash, ERC20Flash)
 
 malicious: bool
 token: address
@@ -21,7 +21,7 @@ def ethDeFi(loan: uint256(wei), interest: uint256(wei)):
     to_return: uint256(wei) = loan + interest
     assert self.balance >= to_return
     if (not self.malicious):
-        EthFlash(msg.sender).returnLoan(value=to_return)
+        ETHFlash(msg.sender).returnLoan(value=to_return)
 
 @public
 def erc20DeFi(loan: uint256, interest: uint256):
@@ -32,7 +32,7 @@ def erc20DeFi(loan: uint256, interest: uint256):
 
 @public
 def flash_loan_eth(eth_flash: address, amount: uint256(wei)):
-    EthFlash(eth_flash).flash(amount)
+    ETHFlash(eth_flash).flash(amount)
 
 @public
 def flash_loan_erc20(erc20_flash: address, amount: uint256):
