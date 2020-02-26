@@ -55,7 +55,4 @@ def getEthFlash(interest_factor: uint256) -> address:
 @public
 @constant
 def getErc20Flash(erc20: address, interest_factor: uint256) -> address:
-    index: uint256 = interest_factor - 1
-    flash_address: address = self.erc20_flash_addresses[erc20][index]
-    assert flash_address != ZERO_ADDRESS
-    return flash_address
+    return self.erc20_flash_addresses[erc20][interest_factor - 1]

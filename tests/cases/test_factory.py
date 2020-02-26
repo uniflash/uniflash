@@ -25,7 +25,7 @@ def test_factory_for_eth(w3, eth_flash_template, factory, pad_bytes32, assert_fa
     assert eth_flash.caller.interestFactor() == INTEREST_FACTOR
 
 def test_factory_for_erc20(w3, erc20_flash_template, HAY_token, factory, pad_bytes32, assert_fail):
-    assert_fail(lambda: factory.caller.getErc20Flash(HAY_token.address, INTEREST_FACTOR))
+    assert factory.caller.getErc20Flash(HAY_token.address, INTEREST_FACTOR) == ZERO_ADDRESS
     factory.functions.createErc20Flash(HAY_token.address).transact()
     assert_fail(lambda: factory.functions.createErc20Flash(HAY_token.address).transact())
     assert_fail(lambda: factory.caller.getErc20Flash(MAX_INTEREST_FACTOR + 1))
