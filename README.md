@@ -24,7 +24,7 @@ One can create a Pool for any ERC20 token using `uniflash-factory`, and then fol
 
 For each token (including Eth), there are 10 pools initialized with fee rate ranging from 0.01%, 0.02%, to 0.10%. Users are free to choose a pool with a matched fee rate.
 
-Why not a dynamic fee rate? The reasons are: 1. It's done on purpose to avoid using any price oracle to quantify the volume of each pool, so as to keep the protocol as simple as possible. 2. If the initial fee is high, then nobody would deposit. The protocol would be stuck in the cold-start phase. However, with the current design, users are able to switch between pools with different fee rates. 3. Even though discrete fee rates are used, the pool sizes could change according to demands and supplies.
+Why not a dynamic fee rate? The reasons are: 1. It's done on purpose to avoid using any price oracle to quantify the volume of each pool, so as to keep the protocol as simple as possible. 2. If the initial fee is high, then nobody would use it. The protocol would be stuck in the cold-start phase. However, with the current design, users are able to switch between pools with different fee rates. 3. Even though discrete fee rates are used, the pool sizes could change according to demands and supplies.
 
 ## Authors
 * Cheng Wang - [polarker](https://twitter.com/wachmc)
