@@ -10,9 +10,9 @@ Note that Uniflash is not audited yet, though there are enough test cases. It's 
 
 One could use any smart contract interactor to play with Uniflash, e.g. https://justsmartcontracts.dev/. It's able to add a front-end similar to Uniswap later if the community likes the project.
 
-Testing on Goerli network:
-1. Switch to Goerli network
-2. Load `abi/uniflash-factory.json` with address: `0x5D63f7b00e3e7a33eD51E4BbCaA548B97A48B9cE`
+Testing on Ropsten network:
+1. Switch to Ropsten network
+2. Load `abi/uniflash-factory.json` with address: `0x689bf4B0E69d113584830958c3A46f40F9B52093`
 3. Get the flash-loan address of Eth by calling `getEthFlash` with any interest factor from 1 to 10 (e.g. 9 means 0.09% fee rate)
 4. Load `abi/uniflash-eth.json` with the address fetched in Step 3
 5. Now one could use `addLiquidity` and `removeLiquidity` to deposit and withdraw your Eth
