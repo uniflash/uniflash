@@ -2,7 +2,7 @@
 
 Uniflash is a simple and decentralized protocol for flash loans, trying to follow the design of Uniswap. It supports both Eth and ERC20 tokens. All the fee goes to users.
 
-Note that Uniflash is not audited yet, though there are enough test cases. It's currently deployed on the Goerli network for testing.
+Note that Uniflash is not audited yet, though there are enough test cases. It's currently deployed on the Ropsten network for testing.
 
 *For discussing and contributing to the next of Uniflash, please join this telegram group [@Uniflash](https://t.me/Uniflash)*
 
